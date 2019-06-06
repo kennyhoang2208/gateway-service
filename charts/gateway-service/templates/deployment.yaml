@@ -23,11 +23,14 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        serviceAccountName: {{ .Chart.Name }}
         env:
 {{- range $pkey, $pval := .Values.env }}
         - name: {{ $pkey }}
           value: {{ $pval }}
 {{- end }}
+        - name: JAVA_OPTS
+          value: -Xmx{{ .Values.javaOpts.xmx }} -Xms{{ .Values.javaOpts.xms }} {{ .Values.javaOpts.other}}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
